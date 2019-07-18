@@ -88,13 +88,17 @@ function Singleplayer() {
    * Updates the {@link Snake} on key events.
    */
   this.keyCallback = () => {
-    if (keyCode == UP_ARROW) {
+    if (keyCode == UP_ARROW &&
+        this.snake.oldDirection != Direction.DOWN) {
       this.snake.direction = Direction.UP;
-    } else if (keyCode == RIGHT_ARROW) {
+    } else if (keyCode == RIGHT_ARROW &&
+        this.snake.oldDirection != Direction.LEFT) {
       this.snake.direction = Direction.RIGHT;
-    } else if (keyCode == DOWN_ARROW) {
+    } else if (keyCode == DOWN_ARROW &&
+        this.snake.oldDirection != Direction.UP) {
       this.snake.direction = Direction.DOWN;
-    } else if (keyCode == LEFT_ARROW) {
+    } else if (keyCode == LEFT_ARROW &&
+        this.snake.oldDirection != Direction.RIGHT) {
       this.snake.direction = Direction.LEFT;
     }
   };
@@ -138,6 +142,10 @@ function Snake(x, y, field) {
    */
   this.direction = Direction.NONE;
   /**
+   * The direction of the previous step.
+   */
+  this.oldDirection = Direction.NONE;
+  /**
    * The field the snake is on.
    */
   this.field = field;
@@ -165,6 +173,8 @@ function Snake(x, y, field) {
 
     this.tiles[0].x = mod(this.tiles[0].x + dx, this.field.width);
     this.tiles[0].y = mod(this.tiles[0].y + dy, this.field.height);
+
+    this.oldDirection = this.direction;
   };
 
   /**
