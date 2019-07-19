@@ -136,7 +136,7 @@ function Snake(x, y, field) {
   /**
    * The tiles the snake consists of.
    */
-  this.tiles = [{x, y}];
+  this.tiles = [{x, y}, {x, y: y + 1}, {x, y: y + 2}];
   /**
    * The direction in which the head moves the next iteration.
    */
@@ -154,6 +154,13 @@ function Snake(x, y, field) {
    * Moves the snake forward.
    */
   this.doStep = function() {
+    if (this.direction == Direction.NONE) return;
+
+    for (let i = this.tiles.length - 1; i > 0; i--) {
+      this.tiles[i].x = this.tiles[i - 1].x;
+      this.tiles[i].y = this.tiles[i - 1].y;
+    }
+
     let dx = 0;
     let dy = 0;
     switch (this.direction) {
