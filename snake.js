@@ -16,13 +16,13 @@ let keyCallback;
  * @readonly
  * @enum {number}
  */
-const Direction = {
-  NONE: 0,
-  UP: 1,
-  RIGHT: 2,
-  DOWN: 3,
-  LEFT: 4,
-};
+const Direction = Object.freeze({
+  NONE: {id: 0, dx: 0, dy: 0},
+  UP: {id: 1, dx: 0, dy: -1},
+  RIGHT: {id: 2, dx: 1, dy: 0},
+  DOWN: {id: 3, dx: 0, dy: 1},
+  LEFT: {id: 4, dx: -1, dy: 0},
+});
 
 /**
  * Sets up the canvas and initialized the game.
@@ -42,6 +42,7 @@ function setup() {
 function draw() {
   background(255);
   fill(255);
+  stroke(0);
   rect(0, 0, width - 1, height - 1);
   game.update();
   game.render();
@@ -56,52 +57,56 @@ function keyPressed() {
 
 /**
  * Defines a game with one player.
- * @constructor
  */
-function Singleplayer() {
+class Singleplayer {
   /**
-   * The {@link Field} to play on. Contains the bounds and render
-   * margins/paddings.
+   * Creates a new {@link Singleplayer} game instance.
    */
-  this.field = new Field(33, 33);
+  constructor() {
+    /**
+     * The {@link Field} to play on. Contains the bounds and render
+     * margins/paddings.
+     */
+    this.field = new Field(33, 33);
 
-  /**
-   * The {@link Snake} that plays.
+    /**
+     * The {@link Snake} that plays.
+     */
+    this.snake = new Snake(16, 16, this.field);
+
+    /**
+   * Updates the {@link Snake} on key events.
    */
-  this.snake = new Snake(16, 16, this.field);
+    keyCallback = () => {
+      if (keyCode == UP_ARROW &&
+        this.snake.oldDirection != Direction.DOWN) {
+        this.snake.direction = Direction.UP;
+      } else if (keyCode == RIGHT_ARROW &&
+        this.snake.oldDirection != Direction.LEFT) {
+        this.snake.direction = Direction.RIGHT;
+      } else if (keyCode == DOWN_ARROW &&
+        this.snake.oldDirection != Direction.UP) {
+        this.snake.direction = Direction.DOWN;
+      } else if (keyCode == LEFT_ARROW &&
+        this.snake.oldDirection != Direction.RIGHT) {
+        this.snake.direction = Direction.LEFT;
+      }
+    };
+  }
 
   /**
    * Upates the game. Call this repeatedly in the game loop.
    */
-  this.update = function() {
+  update() {
     this.snake.doStep();
-  };
+  }
 
   /**
    * Renders the game. Call this repeatedly in the game loop.
    */
-  this.render = function() {
+  render() {
     this.snake.render();
-  };
-
-  /**
-   * Updates the {@link Snake} on key events.
-   */
-  this.keyCallback = () => {
-    if (keyCode == UP_ARROW &&
-        this.snake.oldDirection != Direction.DOWN) {
-      this.snake.direction = Direction.UP;
-    } else if (keyCode == RIGHT_ARROW &&
-        this.snake.oldDirection != Direction.LEFT) {
-      this.snake.direction = Direction.RIGHT;
-    } else if (keyCode == DOWN_ARROW &&
-        this.snake.oldDirection != Direction.UP) {
-      this.snake.direction = Direction.DOWN;
-    } else if (keyCode == LEFT_ARROW &&
-        this.snake.oldDirection != Direction.RIGHT) {
-      this.snake.direction = Direction.LEFT;
-    }
-  };
+  }
 }
 
 /**
@@ -110,15 +115,25 @@ function Singleplayer() {
  * Contains geometry data about the field. This includes logical information
  * like the amount of tiles as well as rendering information like tile
  * size or paddings.
- * @constructor
- * @param {number} width the amount of tiles in horizontal direction
- * @param {number} height the amount of tiles in vertical direction
  */
-function Field(width, height) {
-  this.width = width;
-  this.height = height;
+class Field {
+  /**
+   * Creates a new {@link Field} instance.
+   * @param {number} width the amount of tiles in horizontal direction
+   * @param {number} height the amount of tiles in vertical direction
+   */
+  constructor(width, height) {
+    this.width = width;
+    this.height = height;
+  }
 
-  this.tileDimension = 640 / this.width;
+  /**
+   * Returns the width and height in pixels of a single tile.
+   * @return {number} the dimensions of a single tile on screen.
+   */
+  get tileDimension() {
+    return 640 / this.width;
+  }
 }
 
 /**
@@ -126,73 +141,65 @@ function Field(width, height) {
  *
  * Consists of a set of tiles. Each iteration [doStep]{@link Snake#doStep}
  * should be called, which moves all tiles forward.
- *
- * @constructor
- * @param {number} x the horizontal starting position
- * @param {number} y the vertical starting position
- * @param {Field} field the field on which the snake moves
  */
-function Snake(x, y, field) {
+class Snake {
   /**
-   * The tiles the snake consists of.
+   * Creates a new {@link Snake} instance.
+   * @param {number} x the horizontal starting position
+   * @param {number} y the vertical starting position
+   * @param {Field} field the field on which the snake moves x 
    */
-  this.tiles = [{x, y}, {x, y: y + 1}, {x, y: y + 2}];
-  /**
-   * The direction in which the head moves the next iteration.
-   */
-  this.direction = Direction.NONE;
-  /**
-   * The direction of the previous step.
-   */
-  this.oldDirection = Direction.NONE;
-  /**
-   * The field the snake is on.
-   */
-  this.field = field;
+  constructor(x, y, field) {
+    /**
+     * The tiles the snake consists of.
+     */
+    this.tiles = [{x, y}, {x, y: y + 1}, {x, y: y + 2}];
+    /**
+     * The direction in which the head moves the next iteration.
+     */
+    this.direction = Direction.NONE;
+    /**
+     * The direction of the previous step.
+     */
+    this.oldDirection = Direction.NONE;
+    /**
+     * The field the snake is on.
+     */
+    this.field = field;
+  }
 
   /**
    * Moves the snake forward.
    */
-  this.doStep = function() {
-    if (this.direction == Direction.NONE) return;
-
+  doStep() {
+    if (this.direction == Direction.NONE) {
+      return;
+    }
     for (let i = this.tiles.length - 1; i > 0; i--) {
       this.tiles[i].x = this.tiles[i - 1].x;
       this.tiles[i].y = this.tiles[i - 1].y;
     }
-
-    let dx = 0;
-    let dy = 0;
-    switch (this.direction) {
-      case Direction.UP:
-        dy = -1;
-        break;
-      case Direction.RIGHT:
-        dx = 1;
-        break;
-      case Direction.DOWN:
-        dy = 1;
-        break;
-      case Direction.LEFT:
-        dx = -1;
-        break;
-    }
-
-    this.tiles[0].x = mod(this.tiles[0].x + dx, this.field.width);
-    this.tiles[0].y = mod(this.tiles[0].y + dy, this.field.height);
-
+    this.tiles[0].x = mod(this.tiles[0].x + this.direction.dx,
+        this.field.width);
+    this.tiles[0].y = mod(this.tiles[0].y + this.direction.dy,
+        this.field.height);
     this.oldDirection = this.direction;
-  };
+  }
 
   /**
    * Draws the snake.
    */
-  this.render = function() {
+  render() {
     fill(0);
     for (const tile of this.tiles) {
-      rect(tile.x * this.field.tileDimension, tile.y * this.field.tileDimension,
-          this.field.tileDimension, this.field.tileDimension);
+      fill(0);
+      noStroke();
+      square(tile.x * this.field.tileDimension,
+          tile.y * this.field.tileDimension,
+          this.field.tileDimension);
     }
+  }
+}
   };
 }
 
