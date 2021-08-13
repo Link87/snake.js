@@ -1,9 +1,10 @@
 import p5 from 'p5'
+import * as _ from 'lodash'
 
 import Entity from './Entity'
 import Field from '../field/Field'
 import { mod } from '../util/Helper'
-import { Direction } from '../util/Types'
+import { Direction, Tile } from '../util/Types'
 
 /**
  * A snake.
@@ -12,6 +13,11 @@ import { Direction } from '../util/Types'
  * should be called, which moves all tiles forward.
  */
 export class Snake extends Entity {
+
+    public direction: Direction = Direction.NONE;
+    public oldDirection: Direction = Direction.NONE;
+    private phantomTile: Tile | undefined;
+
     /**
      * Creates a new {@link Snake} instance.
      * @param {number} x the horizontal starting position
@@ -20,15 +26,23 @@ export class Snake extends Entity {
      * @param {Direction} direction the direction in which the head moves the next iteration
      * @param {Direction} oldDirection the direction of the previous step
      */
-    constructor(public x: number, public y: number, public field: Field, public direction: Direction = Direction.NONE, public oldDirection: Direction = Direction.NONE) {
+    constructor(public x: number, public y: number, public field: Field) {
         super(field);
-        this.tiles = [{ x, y }, { x, y: y + 1 }, { x, y: y + 2 }];
+        this.tiles = [{ x, y }];
+        this.phantomTile = undefined
     }
 
     /**
      * Adds a tile to the tail of the snake.
      */
-    // feed() {}
+    feed() {
+        if (this.phantomTile !== undefined) {
+            this.tiles.push(this.phantomTile);
+        } else {
+            console.error('no phantom tile!');
+        }
+        this.phantomTile = undefined;
+    }
 
     /**
      * Moves the snake forward.
@@ -37,6 +51,7 @@ export class Snake extends Entity {
         if (this.direction == Direction.NONE) {
             return;
         }
+        this.phantomTile = {..._.last(this.tiles)!}
         for (let i = this.tiles.length - 1; i > 0; i--) {
             this.tiles[i].x = this.tiles[i - 1].x;
             this.tiles[i].y = this.tiles[i - 1].y;
@@ -58,6 +73,13 @@ export class Snake extends Entity {
             p.noStroke();
             p.square(tile.x * this.field.tileDimension,
                 tile.y * this.field.tileDimension,
+                this.field.tileDimension);
+        }
+        if (this.phantomTile !== undefined) {
+            p.fill(200);
+            p.noStroke();
+            p.square(this.phantomTile.x * this.field.tileDimension,
+                this.phantomTile.y * this.field.tileDimension,
                 this.field.tileDimension);
         }
     }

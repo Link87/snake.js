@@ -13,7 +13,7 @@ let game: Game;
 /**
  * The function to call if a key is pressed.
  */
-let keyCallback: (p: p5) => void;
+let keyCallback: () => void;
 
 const sketch = (p: p5) => {
     /**
@@ -23,7 +23,7 @@ const sketch = (p: p5) => {
     p.setup = function () {
         p.createCanvas(640, 640);
         game = new Singleplayer();
-        keyCallback = game.keyCallback;
+        keyCallback = game.keyCallback(p);
         p.frameRate(20);
     }
 
@@ -41,33 +41,9 @@ const sketch = (p: p5) => {
      */
     p.keyPressed = function () {
         console.log(p.keyCode)
-        keyCallback(p);
+        keyCallback();
     }
 
 }
 
 new p5(sketch);
-
-/*/**
- * A treat that can be collected and lets the collecting snake grow.
- * @constructor
- * @param {Field} field the field the treat is positioned on
- * @param {Snake} entities the game entities that own tiles
- */
-/*class Treat {
-  constructor(field, ...entities) {
-    this.x = 10;
-    this.y = 10;
-    this.field = field;
-    this.entities = entities;
-    this.regenerate = function () {
-      this.x = int(Math.random() * field.width);
-      this.y = int(Math.random() * field.height);
-    };
-    this.render = function () {
-      fill(255, 0, 0);
-      noStroke();
-      square(this.x * this.field.tileDimension, this.y * this.field.tileDimension, this.field.tileDimension);
-  };
-}
-}*/

@@ -12,7 +12,7 @@ export abstract class Game {
      */
     abstract render(p: p5): void;
 
-    abstract keyCallback(p: p5): void;
+    abstract keyCallback(p: p5): () => void;
 }
 
 export default Game;
