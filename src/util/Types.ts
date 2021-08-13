@@ -3,7 +3,7 @@
  * @readonly
  * @enum {number}
  */
-export default class Direction {
+export class Direction {
     static readonly NONE = new Direction('NONE', 0, 0);
     static readonly UP = new Direction('UP', 0, -1);
     static readonly RIGHT = new Direction('RIGHT', 1, 0);
@@ -18,3 +18,5 @@ export default class Direction {
         return this.key;
     }
 }
+
+export type Tile = { x: number, y: number };
