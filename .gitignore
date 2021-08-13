@@ -1,8 +1,10 @@
-# ESLint (and therefore Node)
+# node
 node_modules
-package.json
-package-lock.json
-.eslintrc.json
 
-#jsdoc
+# webpack
+dist/**
+!dist/index.html
+!dist/style.css
+
+# jsdoc
 out
