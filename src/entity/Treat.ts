@@ -18,8 +18,19 @@ export class Treat extends Entity {
     }
 
     regenerate(...entities: Entity[]) {
-        this.tile.x = _.toInteger(Math.random() * this.field.width);
-        this.tile.y = _.toInteger(Math.random() * this.field.height);
+        // repeat until no overlap with existing entity
+        while(true) {
+            this.tile.x = _.toInteger(Math.random() * this.field.width);
+            this.tile.y = _.toInteger(Math.random() * this.field.height);
+            for (let entity of entities) {
+                for (let tile of entity.tiles) {
+                    if (this.tile.x === tile.x && this.tile.y === tile.y) {
+                        continue; // there is an overlap -> repeat
+                    }
+                }
+            }
+            break; // no overlap -> use this position
+        }
     }
 
     render(p: p5) {
