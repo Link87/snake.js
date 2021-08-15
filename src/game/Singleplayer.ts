@@ -11,20 +11,20 @@ import Treat from '../entity/Treat'
  * Defines a game with one player.
  */
 export class Singleplayer extends Game {
+    /**
+     * The {@link Field} to play on. Contains the bounds and render
+     * margins/paddings.
+     */
     field: Field;
     snake: Snake;
     treat: Treat;
 
-    state: 'waiting' | 'running' | 'paused' = 'waiting'
+    state: 'waiting' | 'running' | 'paused' | 'game over' = 'waiting'
     /**
      * Creates a new {@link Singleplayer} game instance.
      */
     constructor() {
         super();
-        /**
-         * The {@link Field} to play on. Contains the bounds and render
-         * margins/paddings.
-         */
         this.field = new Field(33, 33);
 
         /**
@@ -43,9 +43,15 @@ export class Singleplayer extends Game {
         if (this.state === 'running') {
             this.snake.doStep();
             // Eat treat
-            if (this.snake.tiles[0].x == this.treat.tile.x && this.snake.tiles[0].y == this.treat.tile.y) {
-             this.treat.regenerate();
-             this.snake.feed();
+            if (_.head(this.snake.tiles)!.x === this.treat.tile.x && _.head(this.snake.tiles)!.y === this.treat.tile.y) {
+                this.snake.feed();
+                this.treat.regenerate(this.snake);
+            }
+            // check snake for collision with itself
+            for (let tile of _.tail(this.snake.tiles)) {
+                if (_.head(this.snake.tiles)!.x === tile.x && _.head(this.snake.tiles)!.y === tile.y) {
+                    this.state = 'game over'
+                }
             }
         }
     }
