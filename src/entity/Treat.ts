@@ -18,19 +18,33 @@ export class Treat extends Entity {
     }
 
     regenerate(...entities: Entity[]) {
-        // repeat until no overlap with existing entity
-        while(true) {
-            this.tile.x = _.toInteger(Math.random() * this.field.width);
-            this.tile.y = _.toInteger(Math.random() * this.field.height);
-            for (let entity of entities) {
-                for (let tile of entity.tiles) {
-                    if (this.tile.x === tile.x && this.tile.y === tile.y) {
-                        continue; // there is an overlap -> repeat
+        // generate boolean-list with `true` representing occupied and `false` free tiles
+        let occupiedTiles: boolean[] = Array(this.field.width * this.field.height);
+        _.fill(occupiedTiles, false, 0, this.field.width * this.field.height - 1);
+        for (let entity of entities) {
+            for (let tile of entity.tiles) {
+                occupiedTiles[tile.y * this.field.width + tile.x] = true; //row-first
+            }
+        }
+        
+        // generate random index in the domain of free tiles
+        let freeTileCount = _.countBy(occupiedTiles).false;
+        let randomIndex = _.toInteger(Math.random() * freeTileCount);
+
+        // find the tile with the generated index
+        outer: for (let x of _.range(this.field.width)) {
+            for (let y of _.range(this.field.height)) {
+                if (!occupiedTiles[y * this.field.width + x]) {
+                    randomIndex--;
+                    if (randomIndex <= 0) {
+                        this.tile.x = x;
+                        this.tile.y = y;
+                        break outer;
                     }
                 }
             }
-            break; // no overlap -> use this position
         }
+
     }
 
     render(p: p5) {
