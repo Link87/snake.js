@@ -16,6 +16,9 @@ let game: Game;
 let keyCallback: () => void;
 
 const sketch = (p: p5) => {
+
+    p.disableFriendlyErrors = true;
+
     /**
      * Sets up the canvas and initialized the game.
      * This is the p5 setup method and is called once.

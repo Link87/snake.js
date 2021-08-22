@@ -6,6 +6,7 @@ import Field from '../field/Field'
 import { Direction } from '../util/Types'
 import Game from './Game'
 import Treat from '../entity/Treat'
+import Wall from '../entity/Wall'
 
 /**
  * Defines a game with one player.
@@ -18,6 +19,7 @@ export class Singleplayer extends Game {
     field: Field;
     snake: Snake;
     treat: Treat;
+    walls: Wall[];
 
     state: 'waiting' | 'running' | 'paused' | 'game over' = 'waiting'
     /**
@@ -31,6 +33,12 @@ export class Singleplayer extends Game {
          * The {@link Snake} that plays.
          */
         this.snake = new Snake(16, 16, this.field);
+        this.walls = [
+            new Wall(this.field, {x: 0, y: 0}, {x: 32, y: 0}), // top
+            new Wall(this.field, {x: 0, y: 1}, {x: 0, y: 32}), // left
+            new Wall(this.field, {x: 32, y: 1}, {x: 32, y: 32}), // right
+            new Wall(this.field, {x: 1, y: 32}, {x: 31, y: 32}) // bottom
+        ]; 
         this.treat = new Treat(this.field);
         this.treat.regenerate();
     }
@@ -45,12 +53,21 @@ export class Singleplayer extends Game {
             // Eat treat
             if (_.head(this.snake.tiles)!.x === this.treat.tile.x && _.head(this.snake.tiles)!.y === this.treat.tile.y) {
                 this.snake.feed();
-                this.treat.regenerate(this.snake);
+                this.treat.regenerate(this.snake, ...this.walls);
+                // console.log(`regenerated to (${this.treat.tile.x}, ${this.treat.tile.y})`)
             }
             // check snake for collision with itself
             for (let tile of _.tail(this.snake.tiles)) {
                 if (_.head(this.snake.tiles)!.x === tile.x && _.head(this.snake.tiles)!.y === tile.y) {
                     this.state = 'game over'
+                }
+            }
+            // check snake for collision with walls
+            for (let wall of this.walls) {
+                for (let tile of wall.tiles) {
+                    if (_.head(this.snake.tiles)!.x === tile.x && _.head(this.snake.tiles)!.y === tile.y) {
+                        this.state = 'game over'
+                    }
                 }
             }
         }
@@ -63,6 +80,9 @@ export class Singleplayer extends Game {
         this.field.render(p);
         this.snake.render(p);
         this.treat.render(p);
+        for (let wall of this.walls) {
+            wall.render(p)
+        }
     }
 
     /**
