@@ -1,6 +1,15 @@
 # node
 node_modules
 
+# yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
 # webpack
 dist/**
 !dist/index.html
