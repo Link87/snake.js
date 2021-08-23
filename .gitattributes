@@ -1,2 +1,9 @@
-/.yarn/releases/** binary
-/.yarn/plugins/** binary
+.yarn/releases/** binary
+.yarn/plugins/** binary
+
+# linguist adaptions
+.yarn/** linguist-vendored
+dist/index.html -linguist-vendored
+dist/style.css -linguist-vendored
+pnp.cjs linguist-vendored
+webpack.config.js linguist-vendored
