@@ -20,11 +20,14 @@ export class Wall extends Entity {
     render(p: p5, scheme: ColorScheme) {
         p.fill(scheme.walls.rgb().array());
         p.stroke(scheme.walls.rgb().array());
+        p.strokeWeight(1);
+        let offset = this.field.drawingOffset(p.width, p.height);
+        let dimension = this.field.tileDimension(p.width, p.height)
         for (let tile of this.tiles) {
             p.square(
-                tile.x * this.field.tileDimension,
-                tile.y * this.field.tileDimension,
-                this.field.tileDimension
+                offset.x + tile.x * dimension,
+                offset.y + tile.y * dimension,
+                dimension
             );
         }
     }

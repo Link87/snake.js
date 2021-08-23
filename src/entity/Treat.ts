@@ -27,7 +27,7 @@ export class Treat extends Entity {
                 occupiedTiles[tile.y * this.field.width + tile.x] = true; //row-first
             }
         }
-        
+
         // generate random index in the domain of free tiles
         let freeTileCount = _.countBy(occupiedTiles).false;
         let randomIndex = _.toInteger(Math.random() * freeTileCount);
@@ -51,9 +51,13 @@ export class Treat extends Entity {
     render(p: p5, scheme: ColorScheme) {
         p.fill(scheme.treat.rgb().array());
         p.noStroke();
-        p.square(this.tile.x * this.field.tileDimension,
-            this.tile.y * this.field.tileDimension,
-            this.field.tileDimension);
+        let offset = this.field.drawingOffset(p.width, p.height);
+        let dimension = this.field.tileDimension(p.width, p.height)
+        p.square(
+            offset.x + this.tile.x * dimension,
+            offset.y + this.tile.y * dimension,
+            dimension
+        );
     }
 
     get tile() {

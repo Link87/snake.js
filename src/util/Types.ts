@@ -20,3 +20,5 @@ export class Direction {
 }
 
 export type Tile = { x: number, y: number };
+
+export type Position = { x: number, y: number };

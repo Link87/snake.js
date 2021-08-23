@@ -52,7 +52,7 @@ export class Snake extends Entity {
         if (this.direction == Direction.NONE) {
             return;
         }
-        this.phantomTile = {..._.last(this.tiles)!}
+        this.phantomTile = { ..._.last(this.tiles)! }
         for (let i = this.tiles.length - 1; i > 0; i--) {
             this.tiles[i].x = this.tiles[i - 1].x;
             this.tiles[i].y = this.tiles[i - 1].y;
@@ -69,19 +69,17 @@ export class Snake extends Entity {
      */
     render(p: p5, scheme: ColorScheme) {
         p.fill(scheme.player.rgb().array());
-        p.noStroke();
+        p.stroke(scheme.player.rgb().array());
+        p.strokeWeight(1);
+        let offset = this.field.drawingOffset(p.width, p.height);
+        let dimension = this.field.tileDimension(p.width, p.height)
         for (const tile of this.tiles) {
-            p.square(tile.x * this.field.tileDimension,
-                tile.y * this.field.tileDimension,
-                this.field.tileDimension);
+            p.square(
+                offset.x + tile.x * dimension,
+                offset.y + tile.y * dimension,
+                dimension
+            );
         }
-        // if (this.phantomTile !== undefined) {
-        //     p.fill(200);
-        //     p.noStroke();
-        //     p.square(this.phantomTile.x * this.field.tileDimension,
-        //         this.phantomTile.y * this.field.tileDimension,
-        //         this.field.tileDimension);
-        // }
     }
 }
 

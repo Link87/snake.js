@@ -33,7 +33,8 @@ const sketch = (p: p5) => {
      * This is the p5 setup method and is called once.
      */
     p.setup = function () {
-        p.createCanvas(640, 640);
+        let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+        canvas.style('display', 'block');
         game = new Singleplayer();
         keyCallback = game.keyCallback(p);
         p.frameRate(20);
@@ -53,6 +54,10 @@ const sketch = (p: p5) => {
      */
     p.keyPressed = function () {
         keyCallback();
+    }
+
+    p.windowResized = function () {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
     }
 
 }
