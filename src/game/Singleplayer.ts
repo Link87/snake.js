@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 import Snake from '../entity/Snake'
 import Field from '../field/Field'
@@ -7,6 +7,7 @@ import { Direction } from '../util/Types'
 import Game from './Game'
 import Treat from '../entity/Treat'
 import Wall from '../entity/Wall'
+import ColorScheme from '../util/Scheme'
 
 /**
  * Defines a game with one player.
@@ -47,14 +48,13 @@ export class Singleplayer extends Game {
      * Upates the game. Call this repeatedly in the game loop.
      */
     update() {
-        console.log('update')
+        // console.log('update')
         if (this.state === 'running') {
             this.snake.doStep();
             // Eat treat
             if (_.head(this.snake.tiles)!.x === this.treat.tile.x && _.head(this.snake.tiles)!.y === this.treat.tile.y) {
                 this.snake.feed();
                 this.treat.regenerate(this.snake, ...this.walls);
-                // console.log(`regenerated to (${this.treat.tile.x}, ${this.treat.tile.y})`)
             }
             // check snake for collision with itself
             for (let tile of _.tail(this.snake.tiles)) {
@@ -76,12 +76,12 @@ export class Singleplayer extends Game {
     /**
      * Renders the game. Call this repeatedly in the game loop.
      */
-    render(p: p5) {
-        this.field.render(p);
-        this.snake.render(p);
-        this.treat.render(p);
+    render(p: p5, scheme: ColorScheme) {
+        this.field.render(p, scheme);
+        this.snake.render(p, scheme);
+        this.treat.render(p, scheme);
         for (let wall of this.walls) {
-            wall.render(p)
+            wall.render(p, scheme)
         }
     }
 

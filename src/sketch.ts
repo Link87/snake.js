@@ -1,7 +1,9 @@
+import Color from 'color';
 import p5 from 'p5'
 
 import Game from './game/Game'
 import Singleplayer from './game/Singleplayer'
+import ColorScheme from './util/Scheme'
 
 /* exported setup, draw, keyPressed */
 
@@ -14,6 +16,13 @@ let game: Game;
  * The function to call if a key is pressed.
  */
 let keyCallback: () => void;
+
+let scheme: ColorScheme = {
+    background: Color('#000000'),
+    player: Color('#00ff00'),
+    walls: Color('#ffffff'),
+    treat: Color('#ff00ff'),
+}
 
 const sketch = (p: p5) => {
 
@@ -36,14 +45,13 @@ const sketch = (p: p5) => {
      */
     p.draw = function () {
         game.update();
-        game.render(p);
+        game.render(p, scheme);
     }
 
     /**
      * Calls the global {@link keyCallback} method.
      */
     p.keyPressed = function () {
-        console.log(p.keyCode)
         keyCallback();
     }
 

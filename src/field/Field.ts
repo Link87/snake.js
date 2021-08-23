@@ -1,4 +1,5 @@
 import p5 from 'p5'
+import ColorScheme from '../util/Scheme';
 
 /**
  * A field on which a game is played.
@@ -28,11 +29,12 @@ export class Field {
     /**
      * 
      */
-    render(p: p5) {
-        p.background(255);
-        p.fill(255);
-        p.stroke(0);
-        p.rect(0, 0, p.width - 1, p.height - 1);
+    render(p: p5, scheme: ColorScheme) {
+        p.background(scheme.background.rgb().array());
+        // p.noFill();
+        // p.strokeWeight(1);
+        // p.stroke(scheme.background.rgb().array());
+        // p.rect(0, 0, this.width * this.tileDimension, this.height * this.tileDimension);
     }
 }
 

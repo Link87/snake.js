@@ -1,10 +1,11 @@
 import p5 from 'p5'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 import Entity from './Entity'
 import Field from '../field/Field'
 import { mod } from '../util/Helper'
 import { Direction, Tile } from '../util/Types'
+import ColorScheme from '../util/Scheme'
 
 /**
  * A snake.
@@ -66,22 +67,21 @@ export class Snake extends Entity {
     /**
      * Draws the snake.
      */
-    render(p: p5) {
-        p.fill(0);
+    render(p: p5, scheme: ColorScheme) {
+        p.fill(scheme.player.rgb().array());
+        p.noStroke();
         for (const tile of this.tiles) {
-            p.fill(0);
-            p.noStroke();
             p.square(tile.x * this.field.tileDimension,
                 tile.y * this.field.tileDimension,
                 this.field.tileDimension);
         }
-        if (this.phantomTile !== undefined) {
-            p.fill(200);
-            p.noStroke();
-            p.square(this.phantomTile.x * this.field.tileDimension,
-                this.phantomTile.y * this.field.tileDimension,
-                this.field.tileDimension);
-        }
+        // if (this.phantomTile !== undefined) {
+        //     p.fill(200);
+        //     p.noStroke();
+        //     p.square(this.phantomTile.x * this.field.tileDimension,
+        //         this.phantomTile.y * this.field.tileDimension,
+        //         this.field.tileDimension);
+        // }
     }
 }
 

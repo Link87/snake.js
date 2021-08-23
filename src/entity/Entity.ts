@@ -1,6 +1,7 @@
 import p5 from 'p5'
 
 import Field from '../field/Field'
+import ColorScheme from '../util/Scheme';
 import { Tile } from '../util/Types'
 
 /**
@@ -18,7 +19,7 @@ export abstract class Entity {
     /**
      * 
      */
-    abstract render(p: p5): void;
+    abstract render(p: p5, scheme: ColorScheme): void;
 }
 
 export default Entity;

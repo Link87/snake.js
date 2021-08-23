@@ -4,6 +4,7 @@ import _ from 'lodash'
 import Field from "../field/Field";
 import { Tile } from "../util/Types";
 import Entity from "./Entity";
+import ColorScheme from "../util/Scheme";
 
 export class Wall extends Entity {
 
@@ -16,9 +17,9 @@ export class Wall extends Entity {
         }
     }
 
-    render(p: p5) {
-        p.fill(0);
-        p.stroke(0);
+    render(p: p5, scheme: ColorScheme) {
+        p.fill(scheme.walls.rgb().array());
+        p.stroke(scheme.walls.rgb().array());
         for (let tile of this.tiles) {
             p.square(
                 tile.x * this.field.tileDimension,

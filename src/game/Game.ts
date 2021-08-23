@@ -1,4 +1,5 @@
 import p5 from 'p5';
+import ColorScheme from '../util/Scheme';
 
 export abstract class Game {
 
@@ -10,7 +11,7 @@ export abstract class Game {
     /**
      * Renders the game. Call this repeatedly in the game loop.
      */
-    abstract render(p: p5): void;
+    abstract render(p: p5, scheme: ColorScheme): void;
 
     abstract keyCallback(p: p5): () => void;
 }

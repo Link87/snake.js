@@ -1,9 +1,10 @@
 import p5 from "p5";
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 import Field from "../field/Field";
 import { Tile } from "../util/Types";
 import Entity from "./Entity";
+import ColorScheme from "../util/Scheme";
 
 /**
  * A treat that can be collected and lets the collecting snake grow.
@@ -44,11 +45,11 @@ export class Treat extends Entity {
                 }
             }
         }
-
+        console.log(`regenerated to (${this.tile.x}, ${this.tile.y})`)
     }
 
-    render(p: p5) {
-        p.fill(255, 0, 0);
+    render(p: p5, scheme: ColorScheme) {
+        p.fill(scheme.treat.rgb().array());
         p.noStroke();
         p.square(this.tile.x * this.field.tileDimension,
             this.tile.y * this.field.tileDimension,
